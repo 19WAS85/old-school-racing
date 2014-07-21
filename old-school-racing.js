@@ -18,6 +18,7 @@ var TrackBuilder = function (name) {
 }
 
 TrackBuilder.prototype.straight = function (length, width, color) {
+  // todo: use underscore here
   for (var i = 0; i < length; i++) {
     var index = this.segments.length;
     this.segments.push([index, 0, width, color]);
@@ -66,7 +67,7 @@ Render.prototype.render = function () {
   this.updateCallback();
   this.renderer.render(this.stage);
   requestAnimFrame(function () { self.render() });
-};
+}
 
 
 // --- RENDER CONFIG ------------------
@@ -79,18 +80,31 @@ var DefaultRenderConfig = function () {
 }
 
 
+// --- CAR RENDER --------------
+var CarRender = function (car) {
+  this.car = car;
+  this.assets = [car.image];
+}
+
+
 // --- RACE RENDER -----------------------
 var RaceRender = function (race, config) {
   this.race = race;
   this.config = config || new DefaultRenderConfig();
+  this.objects = this.getRaceObjects();
   this.assets = this.getAssets();
   this.render = new Render(this.config, this.assets, this.update);
 }
 
-RaceRender.prototype.update = function () {
-  // TODO: update race state here!
+RaceRender.prototype.update = function () { }
+
+RaceRender.prototype.getRaceObjects = function () {
+  return _(this.race.cars).map(function (c) { return new CarRender(c) });
 }
 
 RaceRender.prototype.getAssets = function () {
-  return _(this.race.cars).map(function (c) { return c.image });
+  return _.chain(this.objects).
+    map(function (o) { return o.assets }).
+    flatten().
+    value();
 }
