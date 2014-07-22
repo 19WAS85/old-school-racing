@@ -1,9 +1,7 @@
 // --- CAR -----------------
 var Car = function (image) {
   this.image = image;
-  this.x = 0;
-  this.y = 0;
-  this.z = 0;
+  this.position = { x: 0, y: 0, z: 0 };
 }
 
 
@@ -42,11 +40,13 @@ var Race = function (track, cars) {
 
 // --- CAMERA ------------
 var Camera = function () {
-  this.field_of_view = Math.tan(45);
+  this.height = 50;
+  this.distance = this.height * 1.3;
+  this.fieldOfView = Math.tan(45);
 }
 
 
-// --- RENDER ------------------------------------------
+// --- RENDER ----------------------------------------------------------
 var Render = function (config, assets, updateCallback, onLoadComplete) {
   var self = this;
   this.config = config;
@@ -85,18 +85,44 @@ var DefaultRenderConfig = function () {
   this.halfHeight = this.height / 2;
 }
 
+// --- PSEUDO3D --------------------------
+var Pseudo3D = function (config, camera) {
+  this.config = config;
+  this.camera = camera;
+  this.scaleCoeficient = 200;
+}
 
-// --- CAR RENDER --------------
-var CarRender = function (car) {
+Pseudo3D.prototype.projectPoint = function(point) {
+  var x = point.x * this.config.scale;
+  var y = (point.y + this.camera.height) * this.config.scale;
+  var z = (point.z + this.camera.distance) * this.config.scale;
+  var xScale = this.config.width / this.camera.fieldOfView;
+  var yScale = this.config.height / this.camera.fieldOfView;
+  var scaleCoeficient = this.config.scale * this.scaleCoeficient;
+  return {
+    x: x * xScale / z + this.config.halfWidth,
+    y: y * yScale / z + this.config.halfHeight,
+    s: (1 / (point.z + this.camera.distance)) * scaleCoeficient
+  };
+}
+
+
+// --- CAR RENDER ------------------------
+var CarRender = function (car, pseudo3d) {
   this.car = car;
+  this.pseudo3d = pseudo3d;
   this.asset = car.image;
   this.texture = PIXI.Texture.fromImage(this.asset);
   this.sprite = new PIXI.Sprite(this.texture);
+  this.sprite.anchor.x = 0.5;
+  this.sprite.anchor.y = 1;
 }
 
 CarRender.prototype.update = function () {
-  this.sprite.position.x = car.x;
-  this.sprite.position.y = car.y;
+  var point = this.pseudo3d.projectPoint(this.car.position);
+  this.sprite.position.x = point.x;
+  this.sprite.position.y = point.y;
+  this.sprite.scale.set(point.s);
 }
 
 
@@ -105,6 +131,8 @@ var RaceRender = function (race, config) {
   var self = this;
   this.race = race;
   this.config = config || new DefaultRenderConfig();
+  this.camera = new Camera();
+  this.pseudo3d = new Pseudo3D(this.config, this.camera);
   this.objects = this.createRenderObjects();
   this.assets = this.getAssets();
   this.render = new Render(
@@ -120,7 +148,10 @@ RaceRender.prototype.update = function () {
 }
 
 RaceRender.prototype.createRenderObjects = function () {
-  return _(this.race.cars).map(function (c) { return new CarRender(c) });
+  var pseudo3d = this.pseudo3d;
+  return _(this.race.cars).map(function (car) {
+    return new CarRender(car, pseudo3d);
+  });
 }
 
 RaceRender.prototype.getAssets = function () {
