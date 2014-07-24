@@ -1,5 +1,4 @@
 var RaceRender = function (race, config) {
-  var self = this;
   this.race = race;
   this.config = new RenderConfig();
   this.camera = new Camera();
@@ -9,8 +8,8 @@ var RaceRender = function (race, config) {
   this.render = new Render(
     this.config,
     this.assets,
-    function () { self.update() },
-    function () { self.registerObjects() }
+    this.registerObjects.bind(this),
+    this.update.bind(this)
   );
 }
 
@@ -19,23 +18,20 @@ RaceRender.prototype.update = function () {
 }
 
 RaceRender.prototype.createRenderObjects = function () {
-  var self = this;
-  var objects = [new TrackRender(self, this.race.track)];
-  return objects.concat(_(this.race.cars).map(function (car) {
-    return new CarRender(self, car);
-  }));
-}
-
-RaceRender.prototype.getAssets = function () {
-  var assets = _(this.objects).map(function (object) {
-    if (object.asset) return object.asset;
-  });
-  return _(assets).compact();
+  var trackRender = new TrackRender(this, this.race.track);
+  var carsRender = _(this.race.cars).map(function (car) {
+    return new CarRender(this, car);
+  }.bind(this));
+  return [trackRender].concat(carsRender);
 }
 
 RaceRender.prototype.registerObjects = function () {
-  var stage = this.render.stage;
   _(this.objects).each(function (object) {
-    if (object.sprite) stage.addChild(object.sprite);
-  });
+    if (object.sprite) this.render.stage.addChild(object.sprite);
+  }.bind(this));
+}
+
+RaceRender.prototype.getAssets = function () {
+  var objectsList = _.chain(this.objects);
+  return objectsList.map(function (o) { return o.asset }).compact().value();
 }

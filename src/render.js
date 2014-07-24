@@ -1,11 +1,10 @@
-var Render = function (config, assets, updateCallback, onLoadComplete) {
-  var self = this;
+var Render = function (config, assets, onLoadComplete, updateCallback) {
   this.config = config;
   this.assets = assets;
   this.updateCallback = updateCallback;
   this.onLoadComplete = onLoadComplete;
   this.loader = new PIXI.AssetLoader(this.assets);
-  this.loader.onComplete = function () { self.load() };
+  this.loader.onComplete = this.load.bind(this);
   this.loader.load();
 }
 
@@ -20,8 +19,7 @@ Render.prototype.load = function () {
 }
 
 Render.prototype.render = function () {
-  var self = this;
   this.updateCallback();
   this.renderer.render(this.stage);
-  requestAnimFrame(function () { self.render() });
+  requestAnimFrame(this.render.bind(this));
 }
