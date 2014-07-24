@@ -8,26 +8,19 @@ var Car = function (image) {
 // --- TRACK --------------------------
 var Track = function (name, segments) {
   this.name = name;
-  this.segments = segments;
-}
-
-
-// --- TRACK BUILDER ---------------
-var TrackBuilder = function (name) {
-  this.name = name;
-  this.segments = [];
-}
-
-TrackBuilder.prototype.straight = function (length, width, color) {
-  // todo: use underscore here
-  for (var i = 0; i < length; i++) {
-    var index = this.segments.length;
-    this.segments.push([index, 0, width, color]);
+  this.segments = segments || [];
+  this.defaultSegmentOptions = {
+    curve: 0, width: 200, color: 0xAAAAAA
   }
 }
 
-TrackBuilder.prototype.create = function () {
-  return new Track(this.name, this.segments);
+Track.prototype.addSegments = function (length, parameters) {
+  var segments = this.segments;
+  parameters = _(this.defaultSegmentOptions).extend(parameters);
+  _(length).times(function () {
+    var thisParameters = _({ index: segments.length }).extend(parameters);
+    segments.push(thisParameters);
+  });
 }
 
 
@@ -59,7 +52,7 @@ var Render = function (config, assets, updateCallback, onLoadComplete) {
 }
 
 Render.prototype.load = function () {
-  this.stage = new PIXI.Stage(0xDDDDDD);
+  this.stage = new PIXI.Stage(0xFDFDFD);
   this.renderer = new PIXI.autoDetectRenderer(
     this.config.width, this.config.height
   );
@@ -76,8 +69,8 @@ Render.prototype.render = function () {
 }
 
 
-// --- RENDER CONFIG ------------------
-var DefaultRenderConfig = function () {
+// --- RENDER CONFIG -----------
+var RenderConfig = function () {
   this.scale = 0.5;
   this.width = 1920 * this.scale;
   this.height = 1080 * this.scale;
@@ -90,6 +83,7 @@ var Pseudo3D = function (config, camera) {
   this.config = config;
   this.camera = camera;
   this.scaleCoeficient = 200;
+  this.segmentLength = 20;
 }
 
 Pseudo3D.prototype.projectPoint = function(point) {
@@ -108,9 +102,9 @@ Pseudo3D.prototype.projectPoint = function(point) {
 
 
 // --- CAR RENDER ------------------------
-var CarRender = function (car, pseudo3d) {
+var CarRender = function (raceRender, car, pseudo3d) {
+  this.raceRender = raceRender;
   this.car = car;
-  this.pseudo3d = pseudo3d;
   this.asset = car.image;
   this.texture = PIXI.Texture.fromImage(this.asset);
   this.sprite = new PIXI.Sprite(this.texture);
@@ -119,10 +113,50 @@ var CarRender = function (car, pseudo3d) {
 }
 
 CarRender.prototype.update = function () {
-  var point = this.pseudo3d.projectPoint(this.car.position);
+  var point = this.raceRender.pseudo3d.projectPoint(this.car.position);
   this.sprite.position.x = point.x;
   this.sprite.position.y = point.y;
   this.sprite.scale.set(point.s);
+}
+
+
+// --- TRACK RENDER -------------------------
+var TrackRender = function (raceRender, track) {
+  this.raceRender = raceRender;
+  this.track = track;
+  this.sprite = new PIXI.Graphics();
+}
+
+TrackRender.prototype.update = function () {
+  this.sprite.clear();
+  var lastPoint = null;
+  _(this.track.segments).each(function (segment) {
+    var point = this.projectSegmentPoint(segment);
+    if (lastPoint) this.drawSegment(point, lastPoint);
+    lastPoint = point;
+  }.bind(this));
+}
+
+TrackRender.prototype.drawSegment = function (point, lastPoint) {
+  this.sprite.beginFill(point.c);
+  this.sprite.moveTo(point.x - point.w, point.y);
+  this.sprite.lineTo(point.x + point.w, point.y);
+  this.sprite.lineTo(lastPoint.x + lastPoint.w, lastPoint.y);
+  this.sprite.lineTo(lastPoint.x - lastPoint.w, lastPoint.y);
+  this.sprite.endFill();
+}
+
+TrackRender.prototype.projectSegmentPoint = function(segment) {
+  var length = this.raceRender.pseudo3d.segmentLength;
+  var halfWidth = this.raceRender.render.config.halfWidth;
+  var position = { x: 0, y: 0, z: segment.index * length };
+  var point = this.raceRender.pseudo3d.projectPoint(position);
+  point.w = segment.width * point.s;
+  point.c = segment.index % 2 == 0 ? segment.color : segment.color - 0x101010;
+  return point;
+}
+
+TrackRender.prototype.calculateSegmentPosition = function(segment) {
 }
 
 
@@ -130,7 +164,7 @@ CarRender.prototype.update = function () {
 var RaceRender = function (race, config) {
   var self = this;
   this.race = race;
-  this.config = config || new DefaultRenderConfig();
+  this.config = new RenderConfig();
   this.camera = new Camera();
   this.pseudo3d = new Pseudo3D(this.config, this.camera);
   this.objects = this.createRenderObjects();
@@ -148,17 +182,23 @@ RaceRender.prototype.update = function () {
 }
 
 RaceRender.prototype.createRenderObjects = function () {
-  var pseudo3d = this.pseudo3d;
-  return _(this.race.cars).map(function (car) {
-    return new CarRender(car, pseudo3d);
-  });
+  var self = this;
+  var objects = [new TrackRender(self, this.race.track)];
+  return objects.concat(_(this.race.cars).map(function (car) {
+    return new CarRender(self, car);
+  }));
 }
 
 RaceRender.prototype.getAssets = function () {
-  return _(this.objects).map(function (o) { return o.asset });
+  var assets = _(this.objects).map(function (object) {
+    if (object.asset) return object.asset;
+  });
+  return _(assets).compact();
 }
 
 RaceRender.prototype.registerObjects = function () {
   var stage = this.render.stage;
-  _(this.objects).each(function (o) { stage.addChild(o.sprite) });
+  _(this.objects).each(function (object) {
+    if (object.sprite) stage.addChild(object.sprite);
+  });
 }

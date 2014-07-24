@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Phaser Test</title>
+    <title>Old School Racing</title>
     <style type="text/css">
-      body { background-color: #AAA }
+      /*body { background-color: #AAA }*/
     </style>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/pixi.js/1.6.0/pixi.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
@@ -13,9 +13,8 @@
     <script type="text/javascript">
 
       var car = new Car('mclaren.png');
-      var builder = new TrackBuilder('Test Track');
-      builder.straight(100, 100, 0x888888);
-      var track = builder.create();
+      var track = new Track('Test Track');
+      track.addSegments(100);
       var race = new Race(track, [car]);
       var render = new RaceRender(race);
 
