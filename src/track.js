@@ -1,16 +1,17 @@
 var Track = function (name, segments) {
   this.name = name;
   this.segments = segments || [];
+  this.segmentLength = 20;
   this.defaultSegmentOptions = {
     curve: 0, width: 200, color: 0xAAAAAA
   }
 }
 
 Track.prototype.addSegments = function (length, parameters) {
-  var segments = this.segments;
   parameters = _(this.defaultSegmentOptions).extend(parameters);
   _(length).times(function () {
-    var thisParameters = _({ index: segments.length }).extend(parameters);
-    segments.push(thisParameters);
-  });
+    var segment = _({ index: this.segments.length }).extend(parameters);
+    segment.length = segment.index * this.segmentLength;
+    this.segments.push(segment);
+  }.bind(this));
 }

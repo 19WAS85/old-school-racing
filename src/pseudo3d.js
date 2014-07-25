@@ -2,7 +2,6 @@ var Pseudo3D = function (config, camera) {
   this.config = config;
   this.camera = camera;
   this.scaleCoeficient = 200;
-  this.segmentLength = 20;
 }
 
 Pseudo3D.prototype.projectPoint = function(point) {
