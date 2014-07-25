@@ -27,6 +27,6 @@ TrackRender.prototype.projectSegmentPoint = function(segment) {
   var position = { x: 0, y: 0, z: segment.length };
   var point = this.raceRender.pseudo3d.projectPoint(position);
   point.w = segment.width * point.s;
-  point.c = segment.index % 2 == 0 ? segment.color : segment.color - 0x101010;
+  point.c = segment.color - (segment.index % 2 == 0 ? 0x101010 : 0);
   return point;
 }
