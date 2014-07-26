@@ -7,11 +7,20 @@ var TrackRender = function (raceRender, track) {
 TrackRender.prototype.update = function () {
   this.sprite.clear();
   var lastPoint = null;
-  _(this.track.segments).each(function (segment) {
+  var baseSegmentIndex = this.getActualBaseSegmentIndex();
+  _(this.raceRender.render.config.drawSegments).times(function (i) {
+    var segmentIndex = baseSegmentIndex + i % this.track.segments.length;
+    var segment = this.track.segments[segmentIndex];
     var point = this.projectSegmentPoint(segment);
     if (lastPoint) this.drawSegment(point, lastPoint);
     lastPoint = point;
   }.bind(this));
+}
+
+TrackRender.prototype.getActualBaseSegmentIndex = function () {
+  var playerZ = this.raceRender.race.player.position.z;
+  var segmentLength = this.track.segmentLength;
+  return parseInt(playerZ / segmentLength);
 }
 
 TrackRender.prototype.drawSegment = function (point, lastPoint) {

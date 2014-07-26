@@ -4,4 +4,5 @@ var RenderConfig = function () {
   this.height = 1080 * this.scale;
   this.halfWidth = this.width / 2;
   this.halfHeight = this.height / 2;
+  this.drawSegments = 100;
 }
