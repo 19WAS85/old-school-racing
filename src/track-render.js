@@ -1,26 +1,25 @@
 var TrackRender = function (raceRender, track) {
   this.raceRender = raceRender;
   this.track = track;
+  this.player = this.raceRender.race.player;
   this.sprite = new PIXI.Graphics();
 }
 
 TrackRender.prototype.update = function () {
   this.sprite.clear();
   var lastPoint = null;
-  var baseSegmentIndex = this.getActualBaseSegmentIndex();
   _(this.raceRender.render.config.drawSegments).times(function (i) {
-    var segmentIndex = baseSegmentIndex + i % this.track.segments.length;
-    var segment = this.track.segments[segmentIndex];
-    var point = this.projectSegmentPoint(segment);
-    if (lastPoint) this.drawSegment(point, lastPoint);
+    var point = this.projectSegmentPoint(this.getNextSegment(i));
+    var segmentAhead = point.z > this.player.position.rz;
+    if (lastPoint && segmentAhead) this.drawSegment(point, lastPoint);
     lastPoint = point;
   }.bind(this));
 }
 
-TrackRender.prototype.getActualBaseSegmentIndex = function () {
-  var playerZ = this.raceRender.race.player.position.z;
-  var segmentLength = this.track.segmentLength;
-  return parseInt(playerZ / segmentLength);
+TrackRender.prototype.getNextSegment = function (i) {
+  var baseSegment = parseInt(this.player.position.z / this.track.segmentLength);
+  var segmentIndex = (baseSegment + i) % this.track.segments.length;
+  return this.track.segments[segmentIndex];
 }
 
 TrackRender.prototype.drawSegment = function (point, lastPoint) {
@@ -33,9 +32,11 @@ TrackRender.prototype.drawSegment = function (point, lastPoint) {
 }
 
 TrackRender.prototype.projectSegmentPoint = function(segment) {
-  var position = { x: 0, y: 0, z: segment.length };
+  var segmentZ = segment.length - this.player.position.z;
+  var position = { x: 0, y: 0, z: segmentZ };
   var point = this.raceRender.pseudo3d.projectPoint(position);
   point.w = segment.width * point.s;
   point.c = segment.color - (segment.index % 2 == 0 ? 0x101010 : 0);
+  point.z = segmentZ;
   return point;
 }
