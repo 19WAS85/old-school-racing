@@ -1,8 +1,7 @@
 var RaceRender = function (race, config) {
   this.race = race;
   this.config = new RenderConfig();
-  this.camera = new Camera();
-  this.pseudo3d = new Pseudo3D(this.config, this.camera);
+  this.pseudo3d = new Pseudo3D(this.config);
   this.objects = this.createRenderObjects();
   this.assets = this.getAssets();
   this.render = new Render(

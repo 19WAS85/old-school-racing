@@ -10,7 +10,7 @@ TrackRender.prototype.update = function () {
   var lastPoint = null;
   _(this.raceRender.render.config.drawSegments).times(function (i) {
     var point = this.projectSegmentPoint(this.getNextSegment(i));
-    var segmentAhead = point.z > this.player.position.rz;
+    var segmentAhead = point.z > this.track.segmentLength;
     if (lastPoint && segmentAhead) this.drawSegment(point, lastPoint);
     lastPoint = point;
   }.bind(this));

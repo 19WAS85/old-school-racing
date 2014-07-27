@@ -5,4 +5,7 @@ var RenderConfig = function () {
   this.halfWidth = this.width / 2;
   this.halfHeight = this.height / 2;
   this.drawSegments = 100;
+  this.cameraHeight = 35;
+  this.cameraDistance = this.cameraHeight * 1.3;
+  this.fieldOfView = Math.tan(45);
 }
