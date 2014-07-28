@@ -1,0 +1,16 @@
+{
+  "name": "old-school-racing",
+  "version": "0.0.1",
+  "description": "A old school racing game made with javascript using pseudo3d technique!",
+  "author": "Wagner Andrade <wagneras@live.com>",
+  "main": "lib/index.js",
+  "keywords": ["game", "racing"],
+  "script": {
+    "build-js": "browserify lib/index.js > old-school-racing.js"
+  },
+  "dependencies": {
+    "underscore": "^1.6.0",
+    "browserify": "^5.9.1"
+  },
+  "devDependencies": {}
+}
