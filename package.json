@@ -5,7 +5,7 @@
   "author": "Wagner Andrade <wagneras@live.com>",
   "main": "lib/index.js",
   "keywords": ["game", "racing"],
-  "script": {
+  "scripts": {
     "build-js": "browserify lib/index.js > old-school-racing.js"
   },
   "dependencies": {
