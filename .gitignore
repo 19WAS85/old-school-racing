@@ -26,3 +26,6 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+old-school-racing.js
+old-school-racing-dev.js
