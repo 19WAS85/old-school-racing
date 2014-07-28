@@ -102,7 +102,8 @@ var RaceRender = function (race, config) {
   this.race = race;
   this.config = new RenderConfig();
   this.pseudo3d = new Pseudo3D(this.config);
-  this.objects = this.createRenderObjects();
+  this.trackRender = new TrackRender(this, this.race.track);
+  this.carsRenders = this.createCarsRenders();
   this.assets = this.getAssets();
   this.render = new Render(
     this.config,
@@ -112,27 +113,26 @@ var RaceRender = function (race, config) {
   );
 }
 
-RaceRender.prototype.update = function () {
-  _(this.objects).each(function (o) { o.update() });
-}
-
-RaceRender.prototype.createRenderObjects = function () {
-  var trackRender = new TrackRender(this, this.race.track);
-  var carsRender = _(this.race.cars).map(function (car) {
+RaceRender.prototype.createCarsRenders = function () {
+  return _(this.race.cars).map(function (c) {
     return new CarRender(this, car);
-  }.bind(this));
-  return [trackRender].concat(carsRender);
-}
-
-RaceRender.prototype.registerObjects = function () {
-  _(this.objects).each(function (object) {
-    if (object.sprite) this.render.stage.addChild(object.sprite);
   }.bind(this));
 }
 
 RaceRender.prototype.getAssets = function () {
-  var objectsList = _.chain(this.objects);
-  return objectsList.map(function (o) { return o.asset }).compact().value();
+  return _(this.carsRenders).map(function (c) { return c.asset });
+}
+
+RaceRender.prototype.registerObjects = function () {
+  this.render.stage.addChild(this.trackRender.sprite);
+  _(this.carsRenders).each(function (carRender) {
+    this.render.stage.addChild(carRender.sprite);
+  }.bind(this));
+}
+
+RaceRender.prototype.update = function () {
+  _(this.carsRenders).each(function (c) { c.update() });
+  this.trackRender.update();
 }
 
 module.exports = RaceRender;
