@@ -10,11 +10,12 @@
       var car = new Car('assets/green-cannibal.png');
       
       var track = new Track('Test Track');
+      track.addSegments(1, { color: 0xFFFFFF });
       track.addSegments(100);
       var race = new Race(track, [car]);
       var render = new RaceRender(race);
 
-      setInterval(function () { car.position.z += 1 }, 16);
+      setInterval(function () { car.position.z += 3 }, 16);
 
     </script>
   </body>
