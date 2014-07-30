@@ -11,7 +11,11 @@
       
       var track = new Track('Test Track');
       track.addSegments(1, { color: 0xFFFFFF });
-      track.addSegments(100);
+      track.addSegments(60);
+      track.addSegments(20, { color: 0xCC9966 });
+      track.addSegments(10);
+      track.addSegments(5, { color: 0xCC9966 });
+      track.addSegments(10);
       var race = new Race(track, [car]);
       var render = new RaceRender(race);
 
