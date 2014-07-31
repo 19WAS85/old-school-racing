@@ -16,10 +16,12 @@
       track.addSegments(10);
       track.addSegments(5, { color: 0xCC9966 });
       track.addSegments(10);
-      var race = new Race(track, [car]);
-      var render = new RaceRender(race);
 
-      setInterval(function () { car.position.z += 5.3 }, 16);
+      var race = new Race(track, [car]);
+      
+      var render = new RaceRender(race);
+      
+      var keyboard = new KeyboardControl(car);
 
     </script>
   </body>
