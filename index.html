@@ -9,13 +9,13 @@
 
       var track = new Track('Test Track');
       track.addSegments(1, { color: 0xFFFFFF });
-      track.addSegments(10);
+      track.addSegments(3);
       track.addSegments(30, { curve: 1 });
       track.addSegments(30, { curve: -1 });
       track.addSegments(20, { color: 0xCC9966 });
       track.addSegments(10);
       track.addSegments(5, { color: 0xCC9966 });
-      track.addSegments(10);
+      track.addSegments(20);
 
       var car = new Car('assets/green-cannibal.png');
       var race = new Race(track, [car]);
