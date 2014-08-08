@@ -10,7 +10,8 @@
       var track = new Track('Test Track');
 
       track.addSegments(1, { color: 0xFFFFFF });
-      track.addSegments(100);
+      track.addSegments(20, { hill: 0.5 });
+      track.addSegments(80);
       track.addSegments(50, { curve: -0.5 , hill: -0.1 });
       track.addSegments(20, { hill: -0.1  });
       track.addSegments(50, { curve: 0.5 , hill: -0.1  });
