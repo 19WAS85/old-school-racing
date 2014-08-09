@@ -10,20 +10,11 @@
       var track = new Track('Test Track');
 
       track.addSegments(1, { color: 0xFFFFFF });
-      track.addSegments(20, { hill: 0.5 });
-      track.addSegments(80);
-      track.addSegments(50, { curve: -0.5 , hill: -0.1 });
-      track.addSegments(20, { hill: -0.1  });
-      track.addSegments(50, { curve: 0.5 , hill: -0.1  });
       track.addSegments(50);
-      track.addSegments(50, { curve: -0.5 });
-      track.addSegments(70, { curve: -0.2 });
-      track.addSegments(300);
-      track.addSegments(100, { curve: -0.5, hill: 0.1  });
-      track.addSegments(20, { hill: 0.1  });
-      track.addSegments(15, { curve: -1.5 });
-      track.addSegments(15, { curve: 1.5 });
-      track.addSegments(100);
+      track.addSegments(50, { hill: 0.05 });
+      track.addSegments(50, { hill: -0.05 });
+      track.addSegments(50, { hill: 0.05 });
+      track.addSegments(50);
 
       var c = new Car('assets/sidewinder.png');
       var c2 = new Car('assets/sidewinder.png');
@@ -31,7 +22,7 @@
       var render = new RaceRender(race);
       var keyboard = new KeyboardControl(c);
 
-      c2.controls.gas = 0.3;
+      c2.controls.gas = 0.5;
 
     </script>
   </body>
