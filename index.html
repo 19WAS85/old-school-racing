@@ -28,6 +28,11 @@
       track.addSegments(15, { curve: 1.5 });
       track.addSegments(100);
 
+      for (var i = 0; i < 100; i++) {
+        var index = Math.round(Math.random() * track.segments.length);
+        track.addObject(index, 'assets/tree.png', 700 * (i % 2 == 0 ? -1 : 1));
+      }
+
       var c = new Car('assets/sidewinder.png');
       var c2 = new Car('assets/sidewinder.png');
       var race = new Race(track, [c, c2]);
