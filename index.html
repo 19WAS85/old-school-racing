@@ -13,7 +13,7 @@
 
       while (track.length < 10000) {
         var length = Math.round(Math.random() * 30) + 20;
-        var curve = Math.random() * 2 - 1;
+        var curve = Math.random() * 1 - 0.5;
         var hill = Math.random() * 0.5 - 0.25;
         track.addSegments(length, { curve: curve, hill: hill });
       }
@@ -27,11 +27,12 @@
 
       var cars = [new Car('assets/sidewinder.png')];
 
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < 9; i++) {
         var car = new Car('assets/sidewinder.png');
-        car.controls.gas = Math.random() * 0.1 + 0.1;
+        car.controls.gas = Math.random() * 0.5 + 0.5;
         car.position.x = Math.random() * 50 - 25;
         cars.push(car);
+        new BasicCPUControl(car);
       }
 
       var race = new Race(track, cars);
