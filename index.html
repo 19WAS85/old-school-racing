@@ -27,15 +27,14 @@
 
       var cars = [new Car('assets/sidewinder.png')];
 
-      for (var i = 0; i < 9; i++) {
+      for (var i = 0; i < 1; i++) {
         var car = new Car('assets/sidewinder.png');
-        car.controls.gas = Math.random() * 0.5 + 0.5;
         car.position.x = Math.random() * 50 - 25;
         cars.push(car);
         new BasicCPUControl(car);
       }
 
-      var race = new Race(track, cars);
+      var race = new Race(track, cars); //, cars[1]);
       var render = new RaceRender(race);
       var keyboard = new KeyboardControl(cars[0]);
 
