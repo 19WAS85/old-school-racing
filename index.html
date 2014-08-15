@@ -9,24 +9,14 @@
 
       var track = new Track('Test Track');
 
-      track.addSegments(1, { color: 0xEEEEEE });
-      track.addSegments(20, { hill: 0.2 });
-      track.addSegments(80);
-      track.addSegments(20, { curve: -0.5, hill: -0.1 });
-      track.addSegments(30, { curve: -0.5 });
-      track.addSegments(20, { hill: -0.1 });
-      track.addSegments(30, { curve: 0.5 });
-      track.addSegments(20, { curve: 0.5, hill: -0.1 });
-      track.addSegments(50);
-      track.addSegments(50, { curve: -0.5 });
-      track.addSegments(70, { curve: -0.2 });
-      track.addSegments(300);
-      track.addSegments(20, { curve: -0.5, hill: 0.1 });
-      track.addSegments(80, { curve: -0.5 });
-      track.addSegments(20, { hill: 0.1 });
-      track.addSegments(15, { curve: -1.5 });
-      track.addSegments(15, { curve: 1.5 });
-      track.addSegments(100);
+      track.addSegments(2, { color: 0xEEEEEE });
+
+      while (track.length < 10000) {
+        var length = Math.round(Math.random() * 30) + 20;
+        var curve = Math.random() * 2 - 1;
+        var hill = Math.random() * 0.5 - 0.25;
+        track.addSegments(length, { curve: curve, hill: hill });
+      }
 
       for (var i = 0; i < 100; i++) {
         var index = Math.round(Math.random() * track.segments.length);
@@ -35,13 +25,17 @@
         track.addObject(index, 'assets/tree.png', (700 + positionMod) * side);
       }
 
-      var c = new Car('assets/sidewinder.png');
-      var c2 = new Car('assets/sidewinder.png');
-      var race = new Race(track, [c, c2]);
-      var render = new RaceRender(race);
-      var keyboard = new KeyboardControl(c);
+      var cars = [new Car('assets/sidewinder.png')];
 
-      c2.controls.gas = 0.1;
+      for (var i = 0; i < 0; i++) {
+        var car = new Car('assets/sidewinder.png');
+        car.controls.gas = Math.random();
+        cars.push(car);
+      }
+
+      var race = new Race(track, cars);
+      var render = new RaceRender(race);
+      var keyboard = new KeyboardControl(cars[0]);
 
     </script>
   </body>
