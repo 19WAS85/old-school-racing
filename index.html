@@ -27,9 +27,10 @@
 
       var cars = [new Car('assets/sidewinder.png')];
 
-      for (var i = 0; i < 0; i++) {
+      for (var i = 0; i < 5; i++) {
         var car = new Car('assets/sidewinder.png');
-        car.controls.gas = Math.random();
+        car.controls.gas = Math.random() * 0.1 + 0.1;
+        car.position.x = Math.random() * 50 - 25;
         cars.push(car);
       }
 
