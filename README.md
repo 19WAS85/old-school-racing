@@ -5,6 +5,10 @@ A pseudo3d old school racing game made with pure Javascript.
 
 It was made to be a racing game platform, to create any kind of race as the golden age of fun.
 
+Check a demo version with a random generated track and seven cpu cars (with a really dumb intelligence):
+
+ * [http://wagnerandrade.github.io/old-school-racing/](http://wagnerandrade.github.io/old-school-racing/)
+
 Creating a Race
 ---------------
 
