@@ -47,10 +47,11 @@ Next Steps
  * Create unit test;
  * Improve performance;
  * Improve race;
- * Improve design;
+ * Improve design.
 
 How to Contribute?
 ------------------
 
- * `npm run watch` to generate a development version of main js.
- * `npm run build` to generate the final version of main js.
+ 1. `npm run watch` to generate a development version of main js;
+ 2. Use the index.html as your sandbox;
+ 3. `npm run build` to generate the final version of main js.
