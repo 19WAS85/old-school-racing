@@ -1,7 +1,7 @@
 {
   "name": "old-school-racing",
   "version": "0.0.1",
-  "description": "A old school racing game made with javascript using pseudo3d technique!",
+  "description": "A pseudo3d old school racing game made with pure Javascript",
   "author": "Wagner Andrade <wagneras@live.com>",
   "keywords": [
     "game",
@@ -17,5 +17,6 @@
     "underscore": "^1.6.0",
     "watchify": "^1.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "license": "Apache License Version 2.0"
 }
