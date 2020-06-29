@@ -7,7 +7,7 @@ It was made to be a racing game platform, to create any kind of race as the gold
 
 Check a demo version with a random generated track and seven cpu cars (with a really dumb intelligence):
 
- * [http://wagnerandrade.github.io/old-school-racing/](http://wagnerandrade.github.io/old-school-racing/)
+ * [https://19was85.github.io/old-school-racing/](https://19was85.github.io/old-school-racing/)
 
 Creating a Race
 ---------------
